@@ -20,6 +20,7 @@ class CIdleInhibitor;
 class CVirtualKeyboardV1Resource;
 class CVirtualPointerV1Resource;
 class IKeyboard;
+class ITrackpadGesture;
 
 AQUAMARINE_FORWARD(IPointer);
 AQUAMARINE_FORWARD(IKeyboard);
@@ -160,6 +161,8 @@ class CInputManager {
 
     // for refocus to be forced
     PHLWINDOWREF                 m_forcedFocus;
+
+    UP<ITrackpadGesture>         m_scrollMoveDrag;
 
     std::vector<SP<IKeyboard>>   m_keyboards;
     std::vector<SP<IPointer>>    m_pointers;

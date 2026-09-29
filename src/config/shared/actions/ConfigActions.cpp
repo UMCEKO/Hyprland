@@ -18,6 +18,7 @@
 #include "../../../ipc/s2/S2.hpp"
 #include "../../../keybinds/Manager.hpp"
 #include "../../../managers/input/InputManager.hpp"
+#include "../../../managers/input/trackpad/gestures/ScrollMoveGesture.hpp"
 #include "../../../managers/fullscreen/FullscreenController.hpp"
 #include "../../../managers/eventLoop/EventLoopManager.hpp"
 #include "../../../layout/LayoutManager.hpp"
@@ -1666,13 +1667,23 @@ ActionResult Actions::mouse(const std::string& action) {
     const bool PRESSED = Config::Actions::state()->m_passPressed == 1;
 
     if (!PRESSED) {
+        if (g_pInputManager->m_scrollMoveDrag) {
+            g_pInputManager->m_scrollMoveDrag->end({});
+            g_pInputManager->m_scrollMoveDrag.reset();
+        }
         if (g_layoutManager->dragController()->target())
             g_layoutManager->endDragTarget();
         return {};
     }
 
-    if (g_layoutManager->dragController()->target())
+    if (g_layoutManager->dragController()->target() || g_pInputManager->m_scrollMoveDrag)
         return {};
+
+    if (action == "scrollmove") {
+        g_pInputManager->m_scrollMoveDrag = makeUnique<CScrollMoveTrackpadGesture>();
+        g_pInputManager->m_scrollMoveDrag->begin({});
+        return {};
+    }
 
     eMouseBindMode mode = MBIND_RESIZE;
 

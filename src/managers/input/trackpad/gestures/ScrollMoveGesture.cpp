@@ -34,11 +34,12 @@ static Layout::Tiled::CScrollingAlgorithm* currentScrollingLayout() {
     return dynamic_cast<Layout::Tiled::CScrollingAlgorithm*>(ALGORITHM->tiledAlgo().get());
 }
 
-static float deltaForUpdate(const ITrackpadGesture::STrackpadGestureUpdate& e) {
+static float deltaForUpdate(const ITrackpadGesture::STrackpadGestureUpdate& e, bool horizontal) {
     if (!e.swipe)
         return 0.F;
 
     switch (e.direction) {
+        case TRACKPAD_GESTURE_DIR_NONE: return (horizontal ? e.swipe->delta.x : e.swipe->delta.y) * e.scale;
         case TRACKPAD_GESTURE_DIR_LEFT:
         case TRACKPAD_GESTURE_DIR_RIGHT:
         case TRACKPAD_GESTURE_DIR_HORIZONTAL: return e.swipe->delta.x * e.scale;
@@ -71,7 +72,7 @@ void CScrollMoveTrackpadGesture::update(const ITrackpadGesture::STrackpadGesture
     if (!SCROLLING)
         return;
 
-    const float  DELTA   = deltaForUpdate(e);
+    const float  DELTA   = deltaForUpdate(e, SCROLLING->isPrimaryHorizontal());
     const double PRIMARY = SCROLLING->primaryViewportSize();
 
     if (DELTA == 0.F || PRIMARY <= 0.0)

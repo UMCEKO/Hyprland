@@ -121,6 +121,7 @@ namespace Layout::Tiled {
 
         double                                     primaryViewportSize();
         double                                     normalizedTapeOffset();
+        bool                                       isPrimaryHorizontal();
 
         CBox                                       usableArea() const;
         SP<SScrollingTargetData>                   dataFor(SP<ITarget> t, bool stepIntoGroups = false) const;

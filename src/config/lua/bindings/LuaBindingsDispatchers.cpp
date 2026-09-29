@@ -644,6 +644,10 @@ static int dsp_mouseDrag(lua_State* L) {
     return requestBindRelease(L, Internal::checkResult(L, CA::mouse("movewindow")));
 }
 
+static int dsp_mouseScrollMove(lua_State* L) {
+    return requestBindRelease(L, Internal::checkResult(L, CA::mouse("scrollmove")));
+}
+
 static int dsp_mouseResize(lua_State* L) {
     auto keepAspectRatio = Check::string(L, lua_upvalueindex(1));
     if (!keepAspectRatio)
@@ -1025,6 +1029,11 @@ static int hlWindowDrag(lua_State* L) {
     return 1;
 }
 
+static int hlScrollMove(lua_State* L) {
+    lua_pushcclosure(L, dsp_mouseScrollMove, 0);
+    return 1;
+}
+
 static int hlWindowResize(lua_State* L) {
     if (lua_gettop(L) == 0 || lua_isnil(L, 1)) {
         lua_pushnumber(L, 0);
@@ -1361,6 +1370,7 @@ void Internal::registerDispatcherBindings(lua_State* L) {
         Internal::setFn(L, "send_shortcut", hlSendShortcut);
         Internal::setFn(L, "send_key_state", hlSendKeyState);
         Internal::setFn(L, "layout", hlLayout);
+        Internal::setFn(L, "scroll_move", hlScrollMove);
         Internal::setFn(L, "dpms", hlDpms);
         Internal::setFn(L, "event", hlEvent);
         Internal::setFn(L, "global", hlGlobal);

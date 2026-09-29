@@ -158,6 +158,11 @@ void CInputManager::onMouseMoved(IPointer::SMotionEvent e) {
     if (PROTO::inputCapture->isCaptured())
         return;
 
+    if (m_scrollMoveDrag) {
+        const IPointer::SSwipeUpdateEvent SWIPE = {.timeMs = e.timeMs, .delta = DELTA};
+        m_scrollMoveDrag->update({.swipe = &SWIPE});
+    }
+
     mouseMoveUnified(e.timeMs, false, e.mouse);
 
     m_lastCursorMovement.reset();
